@@ -1,3 +1,3 @@
-module github.com/SeoSoojin/CaseEncodingAPIGO.git
+module github.com/SeoSoojin/CaseEncodingAPIGO
 
 go 1.15
