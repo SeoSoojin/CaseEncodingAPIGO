@@ -2,7 +2,6 @@ package http
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -35,18 +34,30 @@ func NewApp(
 
 func (h *App) Encode(w http.ResponseWriter, r *http.Request) {
 
-	fmt.Println("Cu http")
 	jsonResponse := []JSONEncodeRes{}
+	jsonErrorResponse := []JSONErrorRespose{}
 	body := r.Body
 	jsonRequest := JSONEncode{}
 	b, err := ioutil.ReadAll(body)
 	if err != nil {
-		panic(err)
+		log.Printf("Body of error: %s", err)
+		jsonErrorResponse = append(jsonErrorResponse, JSONErrorRespose{err.Error()})
+		w.WriteHeader(404)
+		json.NewEncoder(w).Encode(jsonErrorResponse)
 	}
 	json.Unmarshal([]byte(b), &jsonRequest)
 	phrase := jsonRequest.Phrase
 	path := jsonRequest.Path
-	newPath, _ := h.imageEncoder.Encode(phrase, path)
+	newPath, err := h.imageEncoder.Encode(phrase, path)
+	if err != nil {
+		log.Printf("Body of error: %s", err)
+		jsonErrorResponse = append(jsonErrorResponse, JSONErrorRespose{err.Error()})
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode(jsonErrorResponse)
+		return
+
+	}
+
 	jsonResponse = append(jsonResponse, JSONEncodeRes{newPath})
 	json.NewEncoder(w).Encode(jsonResponse)
 
@@ -55,8 +66,16 @@ func (h *App) Encode(w http.ResponseWriter, r *http.Request) {
 func (h *App) Decode(w http.ResponseWriter, r *http.Request) {
 
 	jsonResponse := []JSONDecodeRes{}
+	jsonErrorResponse := []JSONErrorRespose{}
 	urlReq := r.URL.Path
-	str, _ := h.imageDecoder.Decode(urlReq)
+	str, err := h.imageDecoder.Decode(urlReq)
+	if err != nil {
+		log.Printf("Body of error: %s", err)
+		jsonErrorResponse = append(jsonErrorResponse, JSONErrorRespose{err.Error()})
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode(jsonErrorResponse)
+		return
+	}
 	jsonResponse = append(jsonResponse, JSONDecodeRes{str})
 	json.NewEncoder(w).Encode(jsonResponse)
 
@@ -64,8 +83,16 @@ func (h *App) Decode(w http.ResponseWriter, r *http.Request) {
 
 func (h *App) Get(w http.ResponseWriter, r *http.Request) {
 
+	jsonErrorResponse := []JSONErrorRespose{}
 	urlReq := r.URL.Path
-	data, _ := h.imageGetter.Get(urlReq)
+	data, err := h.imageGetter.Get(urlReq)
+	if err != nil {
+		log.Printf("Body of error: %s", err)
+		jsonErrorResponse = append(jsonErrorResponse, JSONErrorRespose{err.Error()})
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode(jsonErrorResponse)
+		return
+	}
 	w.Header().Set("Content-Type", "image/bmp")
 	w.Write(data)
 
@@ -74,11 +101,33 @@ func (h *App) Get(w http.ResponseWriter, r *http.Request) {
 func (h *App) Upload(w http.ResponseWriter, r *http.Request) {
 
 	jsonResponse := []JSONUploadRes{}
+	jsonErrorResponse := []JSONErrorRespose{}
 	r.ParseMultipartForm(1024 * 16)
-	file, header, _ := r.FormFile("file")
+	file, header, err := r.FormFile("file")
+	if err != nil {
+		log.Printf("Body of error: %s", err)
+		jsonErrorResponse = append(jsonErrorResponse, JSONErrorRespose{err.Error()})
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode(jsonErrorResponse)
+		return
+	}
 	path := header.Filename
-	buffer, _ := ioutil.ReadAll(file)
-	newPath, _ := h.imageUploader.Upload(buffer, path)
+	buffer, err := ioutil.ReadAll(file)
+	if err != nil {
+		log.Printf("Body of error: %s", err)
+		jsonErrorResponse = append(jsonErrorResponse, JSONErrorRespose{err.Error()})
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode(jsonErrorResponse)
+		return
+	}
+	newPath, err := h.imageUploader.Upload(buffer, path)
+	if err != nil {
+		log.Printf("Body of error: %s", err)
+		jsonErrorResponse = append(jsonErrorResponse, JSONErrorRespose{err.Error()})
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode(jsonErrorResponse)
+		return
+	}
 	jsonResponse = append(jsonResponse, JSONUploadRes{newPath})
 	json.NewEncoder(w).Encode(jsonResponse)
 

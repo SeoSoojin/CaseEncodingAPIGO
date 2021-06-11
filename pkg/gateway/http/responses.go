@@ -1,7 +1,7 @@
 package http
 
 type JSONDecodeRes struct {
-	Path string `json:"path"`
+	Path string `json:"message"`
 }
 
 type JSONEncodeRes struct {
@@ -10,4 +10,8 @@ type JSONEncodeRes struct {
 
 type JSONUploadRes struct {
 	Path string `json:"path"`
+}
+
+type JSONErrorRespose struct {
+	Error string `json:"error"`
 }

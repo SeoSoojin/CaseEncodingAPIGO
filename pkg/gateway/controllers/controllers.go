@@ -8,6 +8,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/SeoSoojin/CaseEncodingAPIGO/pkg/domain/interfaces"
+	"github.com/SeoSoojin/CaseEncodingAPIGO/pkg/domain/models"
 )
 
 type Controllers struct {
@@ -63,10 +64,19 @@ func (s *Controllers) Decode(path string) (string, error) {
 
 	aux := strings.LastIndex(path, "/")
 	pathFinal := "./assets/encoded/" + path[aux:]
-	data, _ := ioutil.ReadFile(pathFinal)
+	data, err := ioutil.ReadFile(pathFinal)
 	count := 0
 	byte := 0
 	str := ""
+	if err != nil {
+
+		return "", err
+	}
+	if len(data) < 54 {
+
+		return "", models.ErrFormatNotSupported
+
+	}
 	for i := 54; i < len(data); i++ {
 
 		byte = byte + int(data[i]%2)*int(math.Pow(2, float64(7-count)))
@@ -90,7 +100,10 @@ func (s *Controllers) Get(path string) ([]byte, error) {
 
 	aux := strings.LastIndex(path, "/")
 	pathFinal := "./assets/encoded/" + path[aux:]
-	data, _ := ioutil.ReadFile(pathFinal)
+	data, err := ioutil.ReadFile(pathFinal)
+	if err != nil {
+		return nil, err
+	}
 
 	return data, nil
 }
@@ -98,7 +111,10 @@ func (s *Controllers) Get(path string) ([]byte, error) {
 func (s *Controllers) Upload(buffer []byte, path string) (string, error) {
 
 	newPath := "./assets/raw/" + path
-	ioutil.WriteFile(newPath, buffer, 0644)
+	err := ioutil.WriteFile(newPath, buffer, 0644)
+	if err != nil {
+		return "", err
+	}
 
 	return newPath, nil
 }

@@ -39,5 +39,5 @@ func main() {
 		imageUploaderCtn.Get("ImageUploader").(usecases.UCImageUploader),
 	)
 
-	app.Run(":3000")
+	app.Run(":3030")
 }
