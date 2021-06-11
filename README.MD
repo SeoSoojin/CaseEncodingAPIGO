@@ -46,7 +46,7 @@ go test
             --url http://localhost:3030/write-message-on-image \
             --header 'Content-Type: application/json' \
             --data '{
-	                   "path": "./raw/test.bmp",
+	                   "path": "./assets/raw/test.bmp",
 	                   "phrase": "test"
                     }'
     ```
@@ -58,7 +58,7 @@ go test
     ```bash 
     curl    --request GET \
             --url http://localhost:3030/get-image/test-encoded.bmp 
-            --output ./encoded/test.bmp
+            --output ./assets/encoded/test.bmp
     ```
 
 
