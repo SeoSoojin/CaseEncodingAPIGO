@@ -1,3 +1,4 @@
+//Use case for decoder
 package usecases
 
 import "github.com/SeoSoojin/CaseEncodingAPIGO/pkg/domain/services"

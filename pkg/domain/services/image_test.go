@@ -1,3 +1,4 @@
+//Services tests params handling
 package services
 
 import (
@@ -7,9 +8,11 @@ import (
 	"github.com/SeoSoojin/CaseEncodingAPIGO/pkg/domain/models"
 )
 
+//Generic struct to implement function interfaces
 type imgRep struct {
 }
 
+//Generic functions
 func (i *imgRep) Encode(phrase string, path string) (string, error) {
 	return "", nil
 }
@@ -23,6 +26,9 @@ func (i *imgRep) Upload(buffer []byte, path string) (string, error) {
 	return "", nil
 }
 
+//Test using "testing" golang native
+//Verify image extension
+//Verify if any strings are empty
 func TestEncode(t *testing.T) {
 
 	serv := NewImageService(new(imgRep), new(imgRep), new(imgRep), new(imgRep))
@@ -49,6 +55,9 @@ func TestEncode(t *testing.T) {
 	}
 }
 
+//Test using "testing" golang native
+//Verify image extension
+//Verify if any strings are empty
 func TestDecode(t *testing.T) {
 
 	serv := NewImageService(new(imgRep), new(imgRep), new(imgRep), new(imgRep))
@@ -73,6 +82,9 @@ func TestDecode(t *testing.T) {
 	}
 }
 
+//Test using "testing" golang native
+//Verify image extension
+//Verify if any strings are empty
 func TestGet(t *testing.T) {
 
 	serv := NewImageService(new(imgRep), new(imgRep), new(imgRep), new(imgRep))
@@ -97,6 +109,9 @@ func TestGet(t *testing.T) {
 	}
 }
 
+//Test using "testing" golang native
+//Verify image extension
+//Verify if any strings are empty
 func TestUpload(t *testing.T) {
 
 	file, _ := ioutil.ReadFile("../../../assets/raw/test.bmp")

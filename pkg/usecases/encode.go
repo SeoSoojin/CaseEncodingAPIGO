@@ -1,3 +1,4 @@
+//Use case for Encoder
 package usecases
 
 import (

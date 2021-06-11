@@ -1,3 +1,4 @@
+//Use case for getter
 package usecases
 
 import (

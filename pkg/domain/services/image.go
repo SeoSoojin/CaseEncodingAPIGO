@@ -1,3 +1,4 @@
+//Services handle params
 package services
 
 import (
@@ -7,6 +8,7 @@ import (
 	"github.com/SeoSoojin/CaseEncodingAPIGO/pkg/domain/models"
 )
 
+//Struct to give registry access to controllers
 type ImageService struct {
 	encoder  interfaces.ImageEncoder
 	decoder  interfaces.ImageDecoder
@@ -27,7 +29,7 @@ func NewImageService(
 
 //Error of params handler for Encode()
 func (imageService *ImageService) Encode(phrase string, path string) (string, error) {
-
+	//TrimSpace corta a string
 	if strings.TrimSpace(phrase) == "" {
 
 		return "", models.ErrEmptyString
@@ -37,6 +39,7 @@ func (imageService *ImageService) Encode(phrase string, path string) (string, er
 		return "", models.ErrEmptyString
 
 	}
+	// declarada no próprio documento
 	err := checkIfBmp(path)
 	if err != nil {
 		return "", err

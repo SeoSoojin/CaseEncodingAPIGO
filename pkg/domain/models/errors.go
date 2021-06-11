@@ -1,3 +1,4 @@
+//Response models to errors
 package models
 
 import "errors"

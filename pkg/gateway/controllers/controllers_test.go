@@ -1,3 +1,4 @@
+//Test controllers functions
 package controllers
 
 import (
@@ -5,6 +6,7 @@ import (
 	"testing"
 )
 
+//Test if Encode dosn't return a error
 func TestEncode(t *testing.T) {
 	encoder := NewControllers()
 	var tests = []struct {
@@ -27,6 +29,7 @@ func TestEncode(t *testing.T) {
 	}
 }
 
+//Test if Decode dosn't return a error
 func TestDecode(t *testing.T) {
 	encoder := NewControllers()
 	var tests = []struct {
@@ -48,6 +51,7 @@ func TestDecode(t *testing.T) {
 	}
 }
 
+//Test if Getter dosn't return a error
 func TestGetter(t *testing.T) {
 	encoder := NewControllers()
 	var tests = []struct {
@@ -69,6 +73,7 @@ func TestGetter(t *testing.T) {
 	}
 }
 
+//Test if Uploader dosn't return a error
 func TestUpload(t *testing.T) {
 	file, _ := ioutil.ReadFile("../../../test.bmp")
 	encoder := NewControllers()

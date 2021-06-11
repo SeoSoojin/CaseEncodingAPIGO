@@ -1,3 +1,4 @@
+//Http response struct
 package http
 
 //JSON response to write-message-on-image endpoint

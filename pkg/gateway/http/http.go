@@ -1,3 +1,4 @@
+//External communication, handle with server related functions
 package http
 
 import (
@@ -11,7 +12,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-//App struct with router an usecases
+//App struct with router and usecases
 type App struct {
 	Router        *mux.Router
 	imageEncoder  usecases.UCImageEncoder
@@ -36,6 +37,8 @@ func NewApp(
 }
 
 //Handler to write-message-on-image endpoint
+//Minor error handlers
+//Response handler
 func (h *App) Encode(w http.ResponseWriter, r *http.Request) {
 
 	jsonResponse := []JSONEncodeRes{}
@@ -49,6 +52,7 @@ func (h *App) Encode(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(404)
 		json.NewEncoder(w).Encode(jsonErrorResponse)
 	}
+	//pass json to struct in golang
 	json.Unmarshal([]byte(b), &jsonRequest)
 	phrase := jsonRequest.Phrase
 	path := jsonRequest.Path
@@ -68,6 +72,8 @@ func (h *App) Encode(w http.ResponseWriter, r *http.Request) {
 }
 
 //Handler to decode-message-on-image endpoint
+//Minor error handlers
+//Response handler
 func (h *App) Decode(w http.ResponseWriter, r *http.Request) {
 
 	jsonResponse := []JSONDecodeRes{}
@@ -89,6 +95,8 @@ func (h *App) Decode(w http.ResponseWriter, r *http.Request) {
 }
 
 //Handler to get endpoint
+//Minor error handlers
+//Response handler
 func (h *App) Get(w http.ResponseWriter, r *http.Request) {
 
 	jsonErrorResponse := []JSONErrorRespose{}
@@ -109,6 +117,8 @@ func (h *App) Get(w http.ResponseWriter, r *http.Request) {
 }
 
 //Handler to upload endpoint
+//Minor error handlers
+//Response handler
 func (h *App) Upload(w http.ResponseWriter, r *http.Request) {
 
 	jsonResponse := []JSONUploadRes{}

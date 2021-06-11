@@ -1,3 +1,4 @@
+//Dependency injector, clean arch base
 package registry
 
 import (

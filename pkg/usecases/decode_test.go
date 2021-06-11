@@ -1,3 +1,4 @@
+//Tests use case handling for decoder
 package usecases
 
 import (
@@ -6,9 +7,11 @@ import (
 	"github.com/SeoSoojin/CaseEncodingAPIGO/pkg/domain/services"
 )
 
+//Generic struct
 type decRep struct {
 }
 
+//Generic functions
 func (r *decRep) Encode(phrase string, path string) (string, error) {
 
 	return "", nil
@@ -23,6 +26,7 @@ func (i *decRep) Upload(buffer []byte, path string) (string, error) {
 	return "", nil
 }
 
+//Same test as Controlles, but using use cases to handle it
 func TestDecode(t *testing.T) {
 	uc := NewUCImageDecoder(services.NewImageService(new(decRep), new(decRep), new(decRep), new(decRep)))
 	var tests = []struct {
