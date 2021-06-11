@@ -37,6 +37,10 @@ func (s *Controllers) Encode(phrase string, path string) (string, error) {
 		return "", err
 	}
 	count := 0
+	if strings.HasSuffix(phrase, ".") == false {
+
+		phrase = phrase + "."
+	}
 	for i := 0; i < len(phrase); i++ {
 
 		//Transforms the char in a byte in decimal
