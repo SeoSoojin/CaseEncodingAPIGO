@@ -5,11 +5,13 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/SeoSoojin/CaseEncodingAPIGO/pkg/usecases"
 	"github.com/gorilla/mux"
 )
 
+//App struct with router an usecases
 type App struct {
 	Router        *mux.Router
 	imageEncoder  usecases.UCImageEncoder
@@ -18,6 +20,7 @@ type App struct {
 	imageUploader usecases.UCImageUploader
 }
 
+//Creator of App, receives all the usecases as params and return a addres to App
 func NewApp(
 	imageEncoder usecases.UCImageEncoder,
 	imageDecoder usecases.UCImageDecoder,
@@ -32,6 +35,7 @@ func NewApp(
 
 }
 
+//Handler to write-message-on-image endpoint
 func (h *App) Encode(w http.ResponseWriter, r *http.Request) {
 
 	jsonResponse := []JSONEncodeRes{}
@@ -63,12 +67,15 @@ func (h *App) Encode(w http.ResponseWriter, r *http.Request) {
 
 }
 
+//Handler to decode-message-on-image endpoint
 func (h *App) Decode(w http.ResponseWriter, r *http.Request) {
 
 	jsonResponse := []JSONDecodeRes{}
 	jsonErrorResponse := []JSONErrorRespose{}
 	urlReq := r.URL.Path
-	str, err := h.imageDecoder.Decode(urlReq)
+	aux := strings.LastIndex(urlReq, "/")
+	pathFinal := "./assets/encoded/" + urlReq[aux:]
+	str, err := h.imageDecoder.Decode(pathFinal)
 	if err != nil {
 		log.Printf("Body of error: %s", err)
 		jsonErrorResponse = append(jsonErrorResponse, JSONErrorRespose{err.Error()})
@@ -81,11 +88,14 @@ func (h *App) Decode(w http.ResponseWriter, r *http.Request) {
 
 }
 
+//Handler to get endpoint
 func (h *App) Get(w http.ResponseWriter, r *http.Request) {
 
 	jsonErrorResponse := []JSONErrorRespose{}
 	urlReq := r.URL.Path
-	data, err := h.imageGetter.Get(urlReq)
+	aux := strings.LastIndex(urlReq, "/")
+	pathFinal := "./assets/encoded/" + urlReq[aux:]
+	data, err := h.imageGetter.Get(pathFinal)
 	if err != nil {
 		log.Printf("Body of error: %s", err)
 		jsonErrorResponse = append(jsonErrorResponse, JSONErrorRespose{err.Error()})
@@ -98,6 +108,7 @@ func (h *App) Get(w http.ResponseWriter, r *http.Request) {
 
 }
 
+//Handler to upload endpoint
 func (h *App) Upload(w http.ResponseWriter, r *http.Request) {
 
 	jsonResponse := []JSONUploadRes{}
@@ -111,7 +122,7 @@ func (h *App) Upload(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(jsonErrorResponse)
 		return
 	}
-	path := header.Filename
+	filename := header.Filename
 	buffer, err := ioutil.ReadAll(file)
 	if err != nil {
 		log.Printf("Body of error: %s", err)
@@ -120,6 +131,7 @@ func (h *App) Upload(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(jsonErrorResponse)
 		return
 	}
+	path := "./assets/raw/" + filename
 	newPath, err := h.imageUploader.Upload(buffer, path)
 	if err != nil {
 		log.Printf("Body of error: %s", err)
@@ -133,6 +145,7 @@ func (h *App) Upload(w http.ResponseWriter, r *http.Request) {
 
 }
 
+//Function to initialize all the endpoint routes
 func (h *App) initializeRoutes() {
 
 	h.Router.HandleFunc("/write-message-on-image", h.Encode).Methods("POST")
@@ -142,6 +155,7 @@ func (h *App) initializeRoutes() {
 
 }
 
+//Function to start the server
 func (h *App) Run(addr string) {
 
 	log.Printf("Listening at %s", addr)

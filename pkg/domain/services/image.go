@@ -14,6 +14,7 @@ type ImageService struct {
 	uploader interfaces.ImageUploader
 }
 
+//Creator of ImageService, recieves the interfaces as params and return an address of ImageService struct
 func NewImageService(
 	encoder interfaces.ImageEncoder,
 	decoder interfaces.ImageDecoder,
@@ -24,6 +25,7 @@ func NewImageService(
 
 }
 
+//Error of params handler for Encode()
 func (imageService *ImageService) Encode(phrase string, path string) (string, error) {
 
 	if strings.TrimSpace(phrase) == "" {
@@ -43,6 +45,7 @@ func (imageService *ImageService) Encode(phrase string, path string) (string, er
 	return imageService.encoder.Encode(phrase, path)
 }
 
+//Error of params handler for Decode()
 func (imageService *ImageService) Decode(path string) (string, error) {
 
 	if strings.TrimSpace(path) == "" {
@@ -58,6 +61,7 @@ func (imageService *ImageService) Decode(path string) (string, error) {
 	return imageService.decoder.Decode(path)
 }
 
+//Error of params handler for Get()
 func (imageService *ImageService) Get(path string) ([]byte, error) {
 
 	if strings.TrimSpace(path) == "" {
@@ -73,6 +77,7 @@ func (imageService *ImageService) Get(path string) ([]byte, error) {
 	return imageService.getter.Get(path)
 }
 
+//Error of params handler for Upload()
 func (imageService *ImageService) Upload(buffer []byte, path string) (string, error) {
 
 	if strings.TrimSpace(path) == "" {
@@ -80,7 +85,16 @@ func (imageService *ImageService) Upload(buffer []byte, path string) (string, er
 		return "", models.ErrEmptyString
 
 	}
+	err := checkIfBmp(path)
+	if err != nil {
+		return "", err
+	}
 	if len(buffer) < 1 {
+
+		return "", models.ErrInvalidOrCorruptedFile
+
+	}
+	if buffer == nil {
 
 		return "", models.ErrInvalidOrCorruptedFile
 
@@ -88,6 +102,7 @@ func (imageService *ImageService) Upload(buffer []byte, path string) (string, er
 	return imageService.uploader.Upload(buffer, path)
 }
 
+//Function to check if file extension equals .bmp
 func checkIfBmp(path string) error {
 
 	aux := strings.LastIndex(path, ".") + 1

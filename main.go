@@ -6,6 +6,9 @@ import (
 	"github.com/SeoSoojin/CaseEncodingAPIGO/pkg/usecases"
 )
 
+//Main function
+//Creates all the containers
+//Initializes the App struct using all the Containers as params with the proper usecases
 func main() {
 
 	imageEncoderCtn, err := registry.NewImageEncoderContainer()

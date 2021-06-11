@@ -2,6 +2,7 @@ package models
 
 import "errors"
 
+//Custom error messages
 var (
 	ErrFormatNotSupported     = errors.New("Image should be an bmp")
 	ErrEmptyString            = errors.New("Any field cant be empty")

@@ -1,5 +1,6 @@
 package usecases
 
+//Interfaces for all use cases
 type UCImageEncoder interface {
 	Encode(phrase string, path string) (string, error)
 }

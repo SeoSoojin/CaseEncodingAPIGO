@@ -8,6 +8,17 @@ go run main.go
 
 - Description: Starts the server
 
+```bash
+go test -v ./.../
+```
+
+- Execute all the tests recursively if you do on the project root
+
+```bash
+go test
+````
+
+- Execute the tests files in the folder that you\'re doing the command
 
 ## Design Pattern
 
