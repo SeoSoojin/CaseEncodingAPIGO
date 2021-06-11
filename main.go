@@ -1,9 +1,43 @@
 package main
 
-import "fmt"
+import (
+	"github.com/SeoSoojin/CaseEncodingAPIGO/pkg/gateway/http"
+	"github.com/SeoSoojin/CaseEncodingAPIGO/pkg/registry"
+	"github.com/SeoSoojin/CaseEncodingAPIGO/pkg/usecases"
+)
 
 func main() {
 
-	fmt.Println("Hello, world.")
+	imageEncoderCtn, err := registry.NewImageEncoderContainer()
+	if err != nil {
+		panic(err)
+	}
+	defer imageEncoderCtn.Clean()
 
+	imageDecoderCtn, err := registry.NewImageDecoderContainer()
+	if err != nil {
+		panic(err)
+	}
+	defer imageDecoderCtn.Clean()
+
+	imageGetterCtn, err := registry.NewImageGetterContainer()
+	if err != nil {
+		panic(err)
+	}
+	defer imageGetterCtn.Clean()
+
+	imageUploaderCtn, err := registry.NewImageUploaderContainer()
+	if err != nil {
+		panic(err)
+	}
+	defer imageUploaderCtn.Clean()
+
+	app := http.NewApp(
+		imageEncoderCtn.Get("ImageEncoder").(usecases.UCImageEncoder),
+		imageDecoderCtn.Get("ImageDecoder").(usecases.UCImageDecoder),
+		imageGetterCtn.Get("ImageGetter").(usecases.UCImageGetter),
+		imageUploaderCtn.Get("ImageUploader").(usecases.UCImageUploader),
+	)
+
+	app.Run(":3000")
 }
