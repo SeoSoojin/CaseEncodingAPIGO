@@ -37,6 +37,11 @@ func (s *Controllers) Encode(phrase string, path string) (string, error) {
 		return "", err
 	}
 	count := 0
+	if len(phrase)*8+54 > len(data) {
+
+		return "", models.ErrSize
+
+	}
 	if strings.HasSuffix(phrase, ".") == false {
 
 		phrase = phrase + "."
